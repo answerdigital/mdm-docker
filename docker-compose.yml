@@ -1,23 +1,14 @@
 version: '3.8'
 services:
-    postgres:
-        image: "maurodatamapper/postgres:12.14-alpine"
-        build: ./postgres
-        shm_size: 512mb
-        environment:
-            POSTGRES_PASSWORD: postgresisawesome
-        volumes:
-            - postgres12:/var/lib/postgresql/data
-        restart: on-failure
     mauro-data-mapper:
-        image: "maurodatamapper/mauro-data-mapper:${MDM_TAG}"
+        image: "mdm-docker:${IMAGE_TAG}"
         build:
             context: mauro-data-mapper
             args:
                 MDM_APPLICATION_COMMIT: "${MDM_APPLICATION_COMMIT}"
                 MDM_UI_COMMIT: "${MDM_UI_COMMIT}"
-                ADDITIONAL_PLUGINS: ""
-                MDM_UI_THEME_NAME: "default"
+                ADDITIONAL_PLUGINS: "${ADDITIONAL_PLUGINS}"
+                MDM_UI_THEME_NAME: "${MDM_UI_THEME_NAME}"
                 CACHE_BURST: "${CACHE_BURST}"
                 MDM_EXPLORER_API_ENDPOINT: "http://localhost:${MDM_PORT}/api"
         environment:
@@ -25,8 +16,6 @@ services:
             runtime.config.path: /usr/local/tomcat/conf/runtime.yml
         ports:
             - "${MDM_PORT}:8080"
-        depends_on:
-            - postgres
         volumes:
             - lucene_index:/lucene
             - ./shared_volumes/logs/maurodatamapper:/usr/local/tomcat/logs
@@ -36,7 +25,5 @@ services:
 # Persistence capability to systems,
 # Any volumes labelled below will ensure persistence when containers removed unless the volume is removed as well
 volumes:
-    postgres12:
-        driver: local
     lucene_index:
         driver: local
