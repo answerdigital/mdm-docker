@@ -13,8 +13,8 @@ dataSource:
 ---
 maurodatamapper:
     authority:
-        name: 'Mauro Data Mapper'
-        url: http://localhost
+        name: 'NHS England Mauro Data Mapper'
+        url: https://mauro.metadata.nhs.uk
 ---
 # Standard Email configuration
 ---
